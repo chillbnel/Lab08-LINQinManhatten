@@ -14,6 +14,9 @@ namespace Lab08_LINQinManhatten
             JsonConversion();
         }
 
+        /// <summary>
+        /// Method deserializes a JSON file and then filters the data
+        /// </summary>
         static void JsonConversion()
         {
             string path = "../../../data.json";
@@ -24,7 +27,7 @@ namespace Lab08_LINQinManhatten
             }
 
             Manhatten data = JsonConvert.DeserializeObject<Manhatten>(text);
-
+        
             Console.WriteLine("=========== All Neighborhoods ===========");
             var neighborhoods = data.features.Select(x => x).Select(x => x.properties).Select(x => x.neighborhood);
             foreach (var item in neighborhoods)
@@ -39,6 +42,31 @@ namespace Lab08_LINQinManhatten
                 Console.WriteLine(item);
             }
 
+            Console.WriteLine("=========== All Neighborhoods That Don't Have Duplicates ===========");
+            var neighborhoodsNoDuplicates = neighborhoodsNoBlanks.Select(x => x).Distinct();
+            foreach (var item in neighborhoodsNoDuplicates)
+            {
+                Console.WriteLine(item);
+            }
+
+            Console.WriteLine("=========== All Filters in One ===========");
+            var neighborhoodsAllFilters = data.features.Select(x => x).Select(x => x.properties).Select(x => x.neighborhood)
+                                                       .Where(x => x != "")       
+                                                       .Select(x => x).Distinct();
+            foreach (var item in neighborhoodsAllFilters)
+            {
+                Console.WriteLine(item);
+            }
+
+            Console.WriteLine("=========== LINQ Query ===========");
+            var neighborhoodsNoBlanksLINQQuery = from hood in neighborhoods
+                                                 where hood != ""
+                                                 select hood;
+
+            foreach (var item in neighborhoodsNoBlanksLINQQuery)
+            {
+                Console.WriteLine(item);
+            }
         }
     }
 }
