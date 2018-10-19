@@ -11,22 +11,33 @@ namespace Lab08_LINQinManhatten
     {
         static void Main(string[] args)
         {
-            
+            JsonConversion();
         }
 
         static void JsonConversion()
         {
-            string path = "../../data.json";
+            string path = "../../../data.json";
             string text = "";
             using (StreamReader sr = File.OpenText(path))
             {
                 text = sr.ReadToEnd();
             }
 
-            IEnumerable<Properties> brooklynProperties = JsonConvert.DeserializeObject<List<Properties>>(text);
+            Manhatten data = JsonConvert.DeserializeObject<Manhatten>(text);
 
-            var someName = brooklynProperties.Where(x => x.neighborhood);
+            Console.WriteLine("=========== All Neighborhoods ===========");
+            var neighborhoods = data.features.Select(x => x).Select(x => x.properties).Select(x => x.neighborhood);
+            foreach (var item in neighborhoods)
+            {
+                Console.WriteLine(item);
+            }
 
+            Console.WriteLine("=========== All Neighborhoods That Don't Have Blank ===========");
+            var neighborhoodsNoBlanks = neighborhoods.Where(x => x != "");
+            foreach (var item in neighborhoodsNoBlanks)
+            {
+                Console.WriteLine(item);
+            }
 
         }
     }
